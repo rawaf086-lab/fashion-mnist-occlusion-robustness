@@ -1,0 +1,14 @@
+# Dependency List — CAI421 Fashion-MNIST Occlusion Project
+# Install in Google Colab (if needed): pip install -r "Dependency_List.txt"
+# Exact package versions were not recorded during the original experiment.
+# Pin tested package versions before claiming bit-for-bit reproducibility.
+
+numpy
+pandas
+pyarrow
+Pillow
+matplotlib
+scikit-learn
+torch
+torchvision
+ipython
