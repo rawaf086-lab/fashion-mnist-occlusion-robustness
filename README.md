@@ -40,7 +40,13 @@ Analyses include overall and per-class accuracy drops, comparisons at approximat
 
 The instructions specify **a dependency list** and **fixed random seeds**, but do not prescribe exact filenames. This repository uses descriptive names `Dependency_List.txt` and `Fixed_Random_Seeds.py` to make these requirements explicit. The notebook already sets `SEED=42` in Cell 7 (and `random_state=42` for data splitting in Cell 4). Do not run the standalone seed script in a separate shell process expecting it to change the Colab kernel: run the notebook's Cell 7 instead.
 
-The repository may also include the existing `best_fashion_cnn.pth` checkpoint and selected `results/` CSV/PNG outputs if the group decides to distribute them. They are **not embedded in the notebook** and are **not automatically included** just by uploading the `.ipynb` file.
+- `Reproducibility_Instructions.md`: explicit setup and step-by-step instructions for regenerating the reported tables and figures.
+- `best_fashion_cnn.pth`: saved CNN weights (place in the repository root; the notebook does not contain the weights).
+- `results/`: 18 CSV/PNG files containing the saved training, baseline, occlusion, comparison and plotting results.
+
+The original two Fashion-MNIST Parquet input files are **not stored in this GitHub repository**. Obtain their train and test splits from the Fashion-MNIST distribution on Hugging Face, using the `image` and `label` Parquet format and keeping the filenames expected by Cell 3. See `Reproducibility_Instructions.md` for the exact Drive layout.
+
+**Important:** The notebook is written for Google Colab and reads from **Google Drive**, not directly from this GitHub repository. Download the repository files and copy the model and the complete `results/` folder into `MyDrive/DLproject1/` before running it. Uploading a file to GitHub does not cause Colab to find it automatically.
 
 ## Required input files and Drive layout
 
@@ -65,7 +71,7 @@ MyDrive/
         └── ... additional saved figures and analysis CSVs
 ```
 
-The dataset was obtained as **Parquet** files from the Hugging Face Fashion-MNIST dataset. Obtain the correct train/test Parquet splits, and use the **exact filenames expected by code cell 3**, or update the two filename strings before running. The original dataset is available from [Zalando Research](https://github.com/zalandoresearch/fashion-mnist) (MIT licensed); the notebook, however, specifically expects Parquet records containing `image` (with image bytes) and `label` columns.
+The dataset was obtained as **Parquet** files from the [Fashion-MNIST dataset on Hugging Face](https://huggingface.co/datasets/zalando-datasets/fashion_mnist). Obtain the correct train/test Parquet splits, and use the **exact filenames expected by code cell 3**, or update the two filename strings before running. The original dataset is available from [Zalando Research](https://github.com/zalandoresearch/fashion-mnist) (MIT licensed); the notebook, however, specifically expects Parquet records containing `image` (with image bytes) and `label` columns.
 
 **Important for shared Google Drive folders:** a folder shared with your Google account does not necessarily appear at `/content/drive/MyDrive/DLproject1`. Copy/add it to your own My Drive, or change `dataset_path` in cell 2. If the shared directory is read-only, use a **writable copy** for runs that save outputs; some cells use `to_csv` or `savefig` and may fail on read-only Drive folders.
 
@@ -73,7 +79,7 @@ The dataset was obtained as **Parquet** files from the Hugging Face Fashion-MNIS
 
 1. Open `Final_FashionMnist.ipynb` in Google Colab.
 2. Select **Runtime > Change runtime type > T4 GPU** if available. CPU operation is supported but may be slower.
-3. Ensure the paths and inputs above exist in your accessible Google Drive folder. Install packages if Colab is missing them (for example, `!pip install -r "Dependency_List.txt"` after uploading `Dependency_List.txt`, or use the Colab-installed dependencies).
+3. Download the repository contents (including `best_fashion_cnn.pth` and `results/`) and obtain the two input Parquet files separately. Set up the Drive layout shown above. Install packages if Colab is missing them (for example, `!pip install -r "Dependency_List.txt"` after uploading `Dependency_List.txt`, or use the Colab-installed dependencies).
 4. The notebook includes its own random seed setup in Cell 7. The separate `Fixed_Random_Seeds.py` is optional reference code; running it outside the Colab kernel does not seed the notebook. Execute cells **1 through 31 in order** only on a **writable copy** of the project folder. The training function in cell 11 is **defined but not called automatically**; cell 12 loads the saved `.pth` model.
 5. The baseline is checked in cell 13; training history is shown in cell 14. The later cells analyze occlusion and saved results.
 6. Cells **29**, **30**, and **31** display training curves, clean-test confusion matrix/classification report, and class substitution analysis, respectively.
@@ -83,7 +89,7 @@ The dataset was obtained as **Parquet** files from the Hugging Face Fashion-MNIS
 - With the saved CSV files available, some analysis cells **load the precomputed per-image data** rather than repeating image-by-image model inference. This can reproduce the saved analyses quickly but **does not constitute a fresh independent rerun of all experiments**.
 - To recompute the occlusion experiments, use a **separate writable copy** of the Drive directory and remove only the *copied* detailed result files that trigger loading (such as `per_image_occlusion_results.csv` and `fixed_vs_foreground_per_image.csv`). Keep the original data and saved model; review the CSV verification logic before regenerating derived outputs.
 - Some cells overwrite summary CSVs or PNGs when rerun. Do **not** use `Run all` against the team's sole shared results folder.
-- The notebook currently expects an existing `best_fashion_cnn.pth` and `training_history.csv`. The optional training function in cell 11 can train a new CNN **only when explicitly called** with a new, unused `save_path`. It does **not** automatically reproduce the original model or the original training-history file. Before claiming full clean-room reproducibility, make the original weights/history available or document and execute a separate training-and-export workflow.
+- The notebook currently expects the checkpoint in `DLproject1/best_fashion_cnn.pth` and the saved training history in `DLproject1/results/training_history.csv`. The optional training function in cell 11 can train a new CNN **only when explicitly called** with a new, unused `save_path`. It does **not** automatically reproduce the original model or the original training-history file. Before claiming full clean-room reproducibility, make the original weights/history available or document and execute a separate training-and-export workflow.
 
 ## Expected saved outputs
 
@@ -96,6 +102,14 @@ When using the original shared model and results, the verified outcomes include:
 - Per-class paired bootstrap confidence intervals using **1,000 resamples** for each size/class combination.
 
 The notebook produces or reads figures such as `training_curves.png`, `confusion_matrix_clean.png`, `classwise_heatmap.png`, `foreground_vs_accuracy_drop.png`, and `bootstrap_ci_small.png` / `bootstrap_ci_medium.png` / `bootstrap_ci_large.png` in `DLproject1/results/`.
+
+## Where to get the stored results
+
+All 18 project result files are meant to be located in the repository's **`results/` directory**. Downloading the full repository as a ZIP preserves that directory structure. The `.gitkeep` file, if present, is only a directory placeholder and is not needed to run the notebook.
+
+If your Google Drive is read-only or you use the files under **Shared with me**, copy them into your own writable `MyDrive/DLproject1/` directory. The original saved files and model should remain unchanged; evaluation cells may rewrite derived CSV/PNG files in the working copy. For an **independent recomputation** rather than showing saved results, follow the specific optional re-evaluation steps in `Reproducibility_Instructions.md` and protect the original CSVs before temporarily moving copied per-image files.
+
+The repository can remain private during preparation, but reviewers need permission to read it. Making it public does not automatically make a separate Google Drive folder accessible; the needed checkpoint and result files must actually be present in GitHub.
 
 ## Data citation and license
 

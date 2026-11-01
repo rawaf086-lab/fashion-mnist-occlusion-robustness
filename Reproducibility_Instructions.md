@@ -36,8 +36,8 @@ MyDrive/
         └── [other analysis CSVs and PNGs]
 ```
 
-1. Obtain the Fashion-MNIST data from the original source or the Hugging Face Parquet distribution used for this project. The two files must have an `image` column containing image bytes and a `label` column, with **60,000** training images and **10,000** test images.
-2. Obtain the team's original trained checkpoint and saved result files from the project's authorized Google Drive folder. They are **not included automatically** just because the notebook is uploaded to GitHub.
+1. Obtain the Fashion-MNIST train and test Parquet splits from [Fashion-MNIST on Hugging Face](https://huggingface.co/datasets/zalando-datasets/fashion_mnist) (or an equivalent copy of these exact splits). The two files must have an `image` column containing image bytes and a `label` column, with **60,000** training images and **10,000** test images. Rename them to exactly `train-00000-of-00001 (1).parquet` and `test-00000-of-00001 (1).parquet`, or adjust the filenames in notebook Cell 3. The format and splits must match; do not substitute ordinary MNIST (digits) for Fashion-MNIST (clothing).
+2. Download `best_fashion_cnn.pth` from the **root of this GitHub repository** and download the complete **`results/` directory** from this same repository. The easiest method is **Code → Download ZIP** to preserve the folder layout. The checkpoint and results are separate files, not embedded in the `.ipynb` notebook.
 3. Keep the exact filenames above, or adjust Cells 2–3 to match your own copies.
 4. If you access a folder shared from another Google account, it may not appear under `/content/drive/MyDrive/DLproject1`. Make a copy in your own My Drive or change `dataset_path` accordingly.
 5. **Work on a writable copy of `DLproject1`.** Several analysis cells overwrite existing CSV and PNG files when executed. Do not run the entire notebook against the group's sole shared results folder.
@@ -48,7 +48,7 @@ Original Fashion-MNIST project and license: https://github.com/zalandoresearch/f
 
 1. Open `Final_FashionMnist.ipynb` in **Google Colab**.
 2. Choose **Runtime → Change runtime type → T4 GPU** if available.
-3. Make the project files available in your Drive copy under the layout above.
+3. Download the GitHub repository contents and obtain the two dataset Parquet files separately. Copy the checkpoint and all saved `results/` files into a writable `MyDrive/DLproject1/` as shown above. GitHub does **not** automatically mount these files into Google Drive.
 4. Mount Google Drive by running **Cell 1**, and confirm that **Cell 2** points to the right `dataset_path`.
 5. Run Cells **3–14 in numerical order**:
    - Cells 3–8: load data, reproduce the stratified 54,000/6,000 split, apply `ToTensor()` (values in `[0,1]`), set the seed and build DataLoaders.
@@ -105,4 +105,33 @@ Do **not** overwrite `best_fashion_cnn.pth` or the team's original `results/trai
 - The project studies **evaluation robustness** under masked clothing regions. It does not retrain or improve the CNN after applying occlusion.
 - `Foreground-aware` uses an image-intensity threshold (>0.1) as a foreground heuristic, not manual segmentation or semantic masks.
 - `Cell 29` reads `training_history.csv`, `Cell 30` reads `baseline_predictions.csv`, and `Cell 31` reads `per_image_occlusion_results.csv`. Their outputs are derived from those saved records, without retraining.
-- If the repository is **Private**, reviewers need access permission. Public visibility makes the code accessible but does not automatically provide access to external private Google Drive files.
+- If the repository is **Private**, reviewers need GitHub access permission. If the repository is **Public**, the `best_fashion_cnn.pth` and `results/` contents must actually be uploaded to the repository so that reviewers can download them; an external private Google Drive share is not needed for this setup.
+
+## 7. Repository layout and what must be downloaded
+
+The intended final repository layout is:
+
+```text
+fashion-mnist-occlusion-robustness/
+├── Final_FashionMnist.ipynb
+├── README.md
+├── Dependency_List.txt
+├── Fixed_Random_Seeds.py
+├── Reproducibility_Instructions.md
+├── best_fashion_cnn.pth
+└── results/
+    ├── baseline_predictions.csv
+    ├── training_history.csv
+    ├── per_image_occlusion_results.csv
+    ├── occlusion_summary.csv
+    ├── occlusion_classwise.csv
+    ├── fixed_vs_foreground_per_image.csv
+    ├── fixed_vs_foreground_comparison.csv
+    ├── classwise_method_comparison.csv
+    ├── bootstrap_confidence_intervals.csv
+    └── [the other saved CSV and PNG analysis files]
+```
+
+**Dataset files remain separate.** The downloaded GitHub repository does *not* contain the original `train-...parquet` and `test-...parquet` datasets. They must be obtained before executing Cell 3, then placed at the `DLproject1/` paths listed in Section 2.
+
+**Cleanliness of the GitHub root:** If older result files also appear directly next to `README.md` due to an earlier upload, use the **copies inside `results/`** and ignore the duplicates. Those duplicates are not needed for reproduction and may be removed after verifying every file exists in `results/`.
