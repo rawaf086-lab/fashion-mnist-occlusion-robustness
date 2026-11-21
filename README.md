@@ -119,3 +119,12 @@ Fashion-MNIST: Han Xiao, Kashif Rasul, and Roland Vollgraf, *Fashion-MNIST: a No
 
 - The notebook and its output figures document a specific evaluation study. Accuracy differences from fixed versus foreground-aware masking reflect **different test occlusions**, not retraining or improving the neural network itself.
 - This repository is part of the group's CAI421 coursework. Include the required course acknowledgment / AI-use disclosure in the **course submission** as instructed by the instructor.
+**Additional Bootstrap Analysis**
+
+Cells 33 and 34 calculate paired bootstrap 95% confidence intervals for accuracy drops across the nine occlusion conditions.
+
+The generated outputs are saved in the `results/` folder:
+- `bootstrap_overall_accuracy_drop.csv`
+- `bootstrap_accuracy_drop_ci.png`
+
+The analysis uses 1,000 bootstrap resamples with random seed 42 and does not require retraining the CNN.
