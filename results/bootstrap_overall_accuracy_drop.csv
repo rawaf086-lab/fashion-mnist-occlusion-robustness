@@ -1,0 +1,10 @@
+Position,Size,Accuracy_Drop,CI_95_Lower,CI_95_Upper
+Top,Small,2.68,2.19,3.17
+Top,Medium,13.19,12.48,13.94
+Top,Large,27.37,26.45,28.44
+Center,Small,10.11,9.4,10.82
+Center,Medium,22.01,21.17,22.9
+Center,Large,27.87,26.8895,28.830499999999997
+Bottom,Small,5.34,4.79,5.920249999999999
+Bottom,Medium,16.11,15.33,16.95025
+Bottom,Large,26.57,25.649749999999997,27.45025
